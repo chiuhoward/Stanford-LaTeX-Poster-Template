@@ -8,17 +8,21 @@
 % Packages
 % ====================
 
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
 \usepackage[size=custom,width=120,height=72,scale=1.0]{beamerposter}
 \usetheme{gemini}
-% \usecolortheme{uchicago}
 \usecolortheme{stanford}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.17}
+\usepackage{fontspec}
+\usepackage{exscale}
+\usepackage[backend=biber,style=numeric,maxnames=3,minnames=1]{biblatex}
+\addbibresource{poster.bib} % Adjust the filename as needed
+
+\setbeamercolor{headline}{bg=cardinalred,fg=white}
+\setbeamercolor{footline}{bg=footergray,fg=darkcardinal}
 
 % ====================
 % Lengths
@@ -34,22 +38,26 @@
 \newcommand{\separatorcolumn}{\begin{column}{\sepwidth}\end{column}}
 
 
-\title{Your Title Goes Here}
+\title{Neonatal brain age models in preterm infants}
 
 
-\author{Rylan Schaeffer \inst{1} \and Ben Bitdiddle \inst{2} \and Lem E. Tweakit \inst{2}}
+\author{Howard Chiu \inst{1} \and Adam Richie-Halford \inst{2} \and Rocio Velasco Poblaciones \inst{2} \and Melissa Scala \inst{3} \and Molly Lazarus \inst{4} \and Virginia Marchman \inst{2} \and Katherine Travis \inst{4} \and Heidi Feldman \inst{2} \and Jason Yeatman \inst{1}}
 
-\institute[shortinst]{\inst{1} Department of Computer Science}
-\institute[shortinst]{\inst{1} Computer Science, Stanford \samelineand \inst{2} Another Institute}
+\institute[shortinst]{%
+  \inst{1} Graduate School of Education, Stanford University, Stanford, CA, USA \\ 
+  \inst{2} Division of Developmental Behavioral Pediatrics, Stanford University School of Medicine, Stanford, CA, USA \\ 
+  \inst{3} Department of Pediatrics, Division of Neonatology, Stanford University, Stanford, CA, USA \\ 
+  \inst{4} Burke-Cornell Medical Research Institute, Department of Pediatrics, Weill Medical College, Cornell University, New York, NY
+}
 
 % ====================
 % Footer (optional)
 % ====================
 
 \footercontent{
-  \href{rylanschaeffer.github.io}{rylanschaeffer.github.io} \hfill
-  NeurIPS 2021 Workshop: Metacognition in the Age of AI \hfill
-  \href{mailto:rylanschaeffer@gmail.com}{rylanschaeffer@gmail.com}}
+  \href{chiuhoward.github.io}{chiuhoward.github.io} \hfill
+  Flux Congress 2024 \hfill
+  \href{mailto:howardchiu@stanford.edu}{howardchiu@stanford.edu}}
 % (can be left out to remove footer)
 
 % ====================
@@ -72,8 +80,8 @@
     \begin{tikzpicture}[remember picture,overlay]
     %   \node [anchor=north west, inner sep=3cm] at ([xshift=0.0cm,yshift=1.0cm]current page.north west)
     %   {\includegraphics[height=5.0cm]{stanford_logos/Stanford-CS.png}}; % uc-logo-white.eps
-      \node [anchor=north east, inner sep=3cm] at ([xshift=0.0cm,yshift=2.5cm]current page.north east)
-      {\includegraphics[height=7.0cm]{stanford_logos/Block_S_2_color.png}};
+      \node [anchor=north east, inner sep=3cm] at ([xshift=0.0cm,yshift=1.5cm]current page.north east)
+      {\includegraphics[height=2.0cm]{stanford_logos/GSE-hor-logo-white.png}};
     \end{tikzpicture}
 }
 
@@ -83,25 +91,11 @@
 
 \begin{column}{\colwidth}
 
-  \begin{block}{Introduction}
+  \begin{block}{Background}
 
-    Some block contents, followed by a diagram, followed by a dummy paragraph.
+    Preterm birth (\textless 37 weeks of pregnancy) is an important public health issue affecting $> 10\%$ of children worldwide. Among children born very preterm, \textless 32 weeks gestational age (GA), about $\frac{1}{2}$ have disrupted neurodevelopment, including abnormalities in the white matter (WM), which can be characterized by magnetic resonance imaging (MRI). Our research team curated a clinical neonatal neuroimaging dataset to assess the development of WM connections in preterm infant brains. In this study, we aim to develop a model linking WM microstructure to the age at which the scan was obtained. 
 
-    \begin{figure}
-      \centering
-      \begin{tikzpicture}[scale=6]
-        \draw[step=0.25cm,color=gray] (-1,-1) grid (1,1);
-        \draw (1,0) -- (0.2,0.2) -- (0,1) -- (-0.2,0.2) -- (-1,0)
-          -- (-0.2,-0.2) -- (0,-1) -- (0.2,-0.2) -- cycle;
-      \end{tikzpicture}
-      \caption{A figure caption.}
-    \end{figure}
-
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ultricies
-    eget libero ac ullamcorper. Integer et euismod ante. Aenean vestibulum
-    lobortis augue, ut lobortis turpis rhoncus sed. Proin feugiat nibh a
-    lacinia dignissim. Proin scelerisque, risus eget tempor fermentum, ex
-    turpis condimentum urna, quis malesuada sapien arcu eu purus.
+    In typically developing children, prediction of age, and specifically ``brain age,'' is a commonly undertaken task in neuroimaging machine learning. Here, we ask whether features of WM microstructure relate to age, i.e., post-menstrual age at scan (PMA, age since conception), the sum of GA at birth and chronological age (CA, age since birth). These data may be diagnostic of overall brain health in infants born preterm.
 
   \end{block}
 
@@ -316,9 +310,11 @@
   \begin{block}{References}
 
     \nocite{*}
-    \footnotesize{\bibliographystyle{plain}\bibliography{poster}}
+    \renewcommand{\bibfont}{\tiny} % Use \footnotesize, \scriptsize, or \tiny as needed
+    \printbibliography
 
   \end{block}
+
 
 \end{column}
 
