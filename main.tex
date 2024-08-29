@@ -14,10 +14,12 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.17}
 \usepackage{fontspec}
 \usepackage{exscale}
+\usepackage{tabularx}
 \usepackage[backend=biber,style=numeric,maxnames=3,minnames=1]{biblatex}
 \addbibresource{poster.bib} % Adjust the filename as needed
 
@@ -41,13 +43,13 @@
 \title{Neonatal brain age models in preterm infants}
 
 
-\author{Howard Chiu \inst{1} \and Adam Richie-Halford \inst{2} \and Rocio Velasco Poblaciones \inst{2} \and Melissa Scala \inst{3} \and Molly Lazarus \inst{4} \newline \and Virginia Marchman \inst{2} \and Katherine Travis \inst{4} \and Heidi Feldman \inst{2} \and Jason Yeatman \inst{1}}
+\author{Howard Chiu \inst{1} \and Adam Richie-Halford \inst{2} \and Rocio Velasco Poblaciones \inst{2} \and Melissa Scala \inst{3} \and Molly Lazarus \inst{4} \and \newline Virginia Marchman \inst{2} \and Katherine Travis \inst{4} \and Heidi Feldman \inst{2} \and Jason Yeatman \inst{1}}
 
 \institute[shortinst]{%
   \inst{1} Graduate School of Education, Stanford University, Stanford, CA, USA \\ 
   \inst{2} Division of Developmental Behavioral Pediatrics, Stanford University School of Medicine, Stanford, CA, USA \\ 
   \inst{3} Department of Pediatrics, Division of Neonatology, Stanford University, Stanford, CA, USA \\ 
-  \inst{4} Burke-Cornell Medical Research Institute, Department of Pediatrics, Weill Medical College, Cornell University, New York, NY
+  \inst{4} Burke-Cornell Medical Research Institute, Department of Pediatrics, Weill Medical College, Cornell University, New York, NY, USA
 }
 
 % ====================
@@ -78,8 +80,13 @@
 \addtobeamertemplate{headline}{}
 {
   \begin{tikzpicture}[remember picture,overlay]
-    \node [anchor=north east, inner sep=3cm] at ([xshift=2.0cm,yshift=2.0cm]current page.north east)
-    {\includegraphics[height=1.0cm]{stanford_logos/GSE-hor-logo-white.png}};
+    \node [anchor=north east, inner sep=3cm] at ([xshift=1.5cm,yshift=1.5cm]current page.north east)
+    {\includegraphics[width=8.0cm]{stanford_logos/GSE-hor-logo-white.png}};
+  \end{tikzpicture}
+
+  \begin{tikzpicture}[remember picture,overlay]
+    \node [anchor=north east, inner sep=3cm] at ([xshift=0.0cm,yshift=-0.5cm]current page.north east)
+    {\includegraphics[width=6.5cm]{stanford_logos/SOM_DeptOfPediatrics_white_h_LG.png}};
   \end{tikzpicture}
 }
 
@@ -105,6 +112,26 @@
 
     The GA, PMA at scan, and CA at scan were used as target variables. A lasso principal components regression with elastic net regularization was used to predict targets, with splits used to ensure independence of training and test sets. To evaluate model fit, we used a nested cross-validation procedure with 20\% of the dataset held out for each batch, and predicted the age of held-out subjects with fixed parameters based on the linear coefficients from the training set.
 
+    \vspace{20pt}
+    \begin{tikzpicture}[node distance=3cm, auto]
+        % Define block styles
+        \tikzstyle{block} = [rectangle, draw, fill=paloaltogreen, 
+        text width=5em, text centered, rounded corners, minimum height=4em, font=\scriptsize, text=white]
+        \tikzstyle{line} = [draw, -latex']
+
+        % Nodes
+        \node [block] (rawdata) {Raw data \\ available with T1, pe0 and pe1 \\ (n=???)};
+        \node [block, right of=rawdata, yshift=1cm] (qsiprep-pe1) {Completed qsiprep with pe1 \\ (n=???)};
+        \node [block, right of=rawdata, yshift=-1cm] (qsiprep-nope1) {Completed qsiprep without pe1 \\ (n=???)};
+        \node [block, right of=qsiprep-pe1] (pyAFQ-pe1) {Completed pyAFQ \\ (n=???)};
+        \node [block, right of=qsiprep-nope1] (pyAFQ-nope1) {Completed pyAFQ \\ (n=???)};
+
+        % Lines
+        \path [line] (rawdata) -- (qsiprep-pe1);
+        \path [line] (rawdata) -- (qsiprep-nope1);
+        \path [line] (qsiprep-pe1) -- (pyAFQ-pe1);
+        \path [line] (qsiprep-nope1) -- (pyAFQ-nope1);
+    \end{tikzpicture}
   \end{block}
 
 \end{column}
@@ -117,16 +144,47 @@
 
     Features in infant white matter microstructure explain significant variance in PMA at scan of these infants ($R^2 = 0.21$). When decomposed into GA at birth and CA at scan, we observe that diffusion properties explain 15\% of variance in CA and 2\% of variance in GA, respectively. The Lasso PCR model had a mean $\alpha$ value of 17.1 (SD = 13.1), with the model weights that were significantly different from 0 distributed over many different tracts and diffusion MRI (dMRI) tissue properties (both FA and MD).
 
+    % Table to include 12 models - with and without pe1, LassoCV and SGL, and each of them FA+MD, FA only and MD only. Metrics will be Train R2, Test R2, Train MAE, Test MAE, L1 ratio, Alpha. One-tailed t-test to see if they are significantly different from 0
+    \begin{table}[ht]
+      \centering
+      \fontsize{8.5}{10}\selectfont
+      \begin{tabularx}{\textwidth}{X c c c c c c}
+        \toprule
+        \textbf{Model} & \textbf{Train $R^2$} & \textbf{Test $R^2$} & \textbf{Train MAE} &
+        \textbf{Test MAE} &
+        \textbf{$\alpha$} &
+        \textbf{L1 Ratio}\\
+        \midrule
+        PCR with pe1 (FA and MD) & 0.537 & -1.00 & 8.38 & 9.82 & - & - \\
+        PCR without pe1 (FA and MD) & 0.579 & -1.49 & 7.98 & 9.78 & - & - \\
+        \midrule
+        PCR-Lasso with pe1 (FA and MD) & 0.491 & 0.208 & 6.99 & 7.67 & 17.1 & - \\
+        PCR-Lasso with pe1 (FA only) & 0.428 & 0.144 & 6.75 & 7.43 & 9.26 & - \\
+        PCR-Lasso with pe1 (MD only) & 0.180 & 0.047 & 8.30 & 8.71 & 28.5 & - \\
+        \midrule
+        PCR-SGL with pe1 (FA and MD) & 0.264 & 0.104 & 8.05 & 8.19 & 37.1 & 0.903 \\
+        PCR-SGL with pe1 (FA only) & - & - & - & - & - & - \\
+        PCR-SGL with pe1 (MD only) & - & - & - & - & - & - \\
+        \midrule
+        PCR-Lasso without pe1 (FA and MD) & 0.590 & -0.015 & 5.72 & 7.00 & 35.5 & - \\
+        PCR-Lasso without pe1 (FA only) & 0.476 & 0.135 & 6.38 & 6.64 & 16.3 & - \\
+        PCR-Lasso without pe1 (MD only) & 0.365 & -0.024 & 7.33 & 8.09 & 48.2 & - \\
+        \midrule
+        PCR-SGL without pe1 (FA and MD) & 0.326 & 0.146 & 7.36 & 7.50 & 41.0 & 0.911 \\
+        PCR-SGL without pe1 (FA only) & - & - & - & - & - & - \\
+        PCR-SGL without pe1 (MD only) & - & - & - & - & - & - \\
+        \bottomrule
+      \end{tabularx}
+      \caption{Comparison of model performance when predicting PMA at scan (days).}
+    \end{table}
+    
+    % I should plot all four into the same diagram to save space - maybe dotted lines for without pe1, and a different color for LassoCV
+    \vspace{-30pt}  % Adjust the value to control the space
     \begin{figure}
       \centering
-      \includegraphics[trim=10 20 10 20,clip,width=0.8\textwidth]{sgl.jpg}
-      \caption{Sparse Group Lasso with both phase encoding directions.}
-    \end{figure}
-
-    \begin{figure}
-      \centering
-      \includegraphics[trim=10 20 10 20,clip,width=0.8\textwidth]{sgl_nofmap.jpg}
-      \caption{Sparse Group Lasso without reverse phase encoding direction.}
+      \includegraphics[trim=10 20 10 20,clip,width=1.05\textwidth]{sgl_both.jpg}
+      \vspace{-40pt}  % Adjust the value to control the space
+      \caption{Sparse Group Lasso with and without reverse phase-encoding direction (pe1).}
     \end{figure}
 
   \end{block}
@@ -145,26 +203,15 @@
 
   \end{block}
 
-  \begin{block}{Nullam vel erat at velit convallis laoreet}
+  \begin{block}{Filler Text for Now}
 
-    Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-    inceptos himenaeos. Phasellus libero enim, gravida sed erat sit amet,
-    scelerisque congue diam. Fusce dapibus dui ut augue pulvinar iaculis.
+    Something about how brain age models have commonly been developed with metrics derived from structural and functional MRI scans, but this adds another angle to approach brain age prediction. Node-level and tract-level details allow us to localize areas that are more predictive of brain age or perhaps larger variance within premature neonates.
 
-    \begin{table}
-      \centering
-      \begin{tabular}{l r r c}
-        \toprule
-        \textbf{First column} & \textbf{Second column} & \textbf{Third column} & \textbf{Fourth} \\
-        \midrule
-        Foo & 13.37 & 384,394 & $\alpha$ \\
-        Bar & 2.17 & 1,392 & $\beta$ \\
-        Baz & 3.14 & 83,742 & $\delta$ \\
-        Qux & 7.59 & 974 & $\gamma$ \\
-        \bottomrule
-      \end{tabular}
-      \caption{A table caption.}
-    \end{table}
+  \end{block}
+
+  \begin{block}{Future Work}
+
+    Look at how brain age gap correlates with health and care composites.
 
   \end{block}
 
