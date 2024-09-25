@@ -8,7 +8,7 @@
 % Packages
 % ====================
 
-\usepackage[size=custom,width=48,height=36,scale=0.5]{beamerposter}
+\usepackage[size=custom,width=42,height=36,scale=0.5]{beamerposter}
 \usetheme{gemini}
 \usecolortheme{stanford}
 \usepackage{graphicx}
@@ -20,8 +20,12 @@
 \usepackage{fontspec}
 \usepackage{exscale}
 \usepackage{tabularx}
+\usepackage{colortbl} % For \rowcolor
+\usepackage{xcolor}   % For color definitions
+\usepackage{tcolorbox}
 \usepackage[backend=biber,style=numeric,maxnames=3,minnames=1]{biblatex}
 \addbibresource{poster.bib} % Adjust the filename as needed
+\usepackage{amssymb}
 
 \setbeamercolor{headline}{bg=cardinalred,fg=white}
 \setbeamercolor{footline}{bg=footergray,fg=darkcardinal}
@@ -43,7 +47,7 @@
 \title{Neonatal brain age models in preterm infants}
 
 
-\author{Howard Chiu \inst{1} \and Adam Richie-Halford \inst{2} \and Rocio Velasco Poblaciones \inst{2} \and Melissa Scala \inst{3} \and Molly Lazarus \inst{4} \and \newline Virginia Marchman \inst{2} \and Katherine Travis \inst{4} \and Heidi Feldman \inst{2} \and Jason Yeatman \inst{1}}
+\author{\fontsize{16}{18}\selectfont Howard Chiu \inst{1} \and Adam Richie-Halford \inst{2} \and Rocio Velasco Poblaciones \inst{2} \and Melissa Scala \inst{3} \and Molly Lazarus \inst{4} \and \newline Virginia Marchman \inst{2} \and Katherine Travis \inst{4} \and Heidi Feldman \inst{2} \and Jason Yeatman \inst{1}}
 
 \institute[shortinst]{%
   \inst{1} Graduate School of Education, Stanford University, Stanford, CA, USA \\ 
@@ -58,7 +62,7 @@
 
 \footercontent{
   \href{chiuhoward.github.io}{chiuhoward.github.io} \hfill
-  Flux Congress 2024 \hfill
+  Thank you to all the families and healthcare professionals that made this research possible! \hfill
   \href{mailto:howardchiu@stanford.edu}{howardchiu@stanford.edu}}
 % (can be left out to remove footer)
 
@@ -80,13 +84,13 @@
 \addtobeamertemplate{headline}{}
 {
   \begin{tikzpicture}[remember picture,overlay]
-    \node [anchor=north east, inner sep=3cm] at ([xshift=1.5cm,yshift=1.5cm]current page.north east)
-    {\includegraphics[width=8.0cm]{stanford_logos/GSE-hor-logo-white.png}};
+    \node [anchor=north east, inner sep=3cm] at ([xshift=2.25cm,yshift=1.5cm]current page.north east)
+    {\includegraphics[width=6.0cm]{stanford_logos/GSE-hor-logo-white.png}};
   \end{tikzpicture}
 
   \begin{tikzpicture}[remember picture,overlay]
-    \node [anchor=north east, inner sep=3cm] at ([xshift=0.0cm,yshift=-0.5cm]current page.north east)
-    {\includegraphics[width=6.5cm]{stanford_logos/SOM_DeptOfPediatrics_white_h_LG.png}};
+    \node [anchor=north east, inner sep=3cm] at ([xshift=0.75cm,yshift=-0.5cm]current page.north east)
+    {\includegraphics[width=4.25cm]{stanford_logos/SOM_DeptOfPediatrics_white_h_LG.png}};
   \end{tikzpicture}
 }
 
@@ -95,43 +99,163 @@
 \separatorcolumn
 
 \begin{column}{\colwidth}
-
+  \vspace{-15pt}
   \begin{block}{Introduction}
+    Preterm birth (\textless 37 weeks of pregnancy) is an important public health issue affecting $>10\%$ of children worldwide. Among children born very preterm, \textless 32 weeks gestational age (GA), about $\frac{1}{2}$ have disrupted neurodevelopment, including abnormalities in the white matter (WM).
+    
+     In this study, we aim to develop a brain age model that can be used as a summary statistic of infant neurodevelopment which can guide clinical decision-making.
 
-    Preterm birth (\textless 37 weeks of pregnancy) is an important public health issue affecting $> 10\%$ of children worldwide. Among children born very preterm, \textless 32 weeks gestational age (GA), about $\frac{1}{2}$ have disrupted neurodevelopment, including abnormalities in the white matter (WM), which can be characterized by magnetic resonance imaging (MRI). Our research team curated a clinical neonatal neuroimaging dataset to assess the development of WM connections in preterm infant brains. In this study, we aim to develop a model linking WM microstructure to the age at which the scan was obtained. 
-
-    In typically developing children, prediction of age, and specifically ``brain age,'' is a commonly undertaken task in neuroimaging machine learning. Here, we ask whether features of WM microstructure relate to age, i.e., post-menstrual age at scan (PMA, age since conception), the sum of GA at birth and chronological age (CA, age since birth). These data may be diagnostic of overall brain health in infants born preterm.
-
+    \begin{columns}[t] % Ensure top alignment
+      % Left column with the TikZ picture
+      \begin{column}{0.45\textwidth}
+        \vspace{5pt}
+        \begin{tikzpicture}
+          % Actual age bar (longer bar)
+          \filldraw[fill=blue!30, draw=none] (0,0) rectangle (6,1);
+          
+          % Predicted age bar (shorter bar)
+          \filldraw[fill=orange!60, draw=none] (0,0) rectangle (4,1);
+          
+          % Text annotations
+          \node at (2,0.5) {Predicted Age};
+          \node at (3,1.3) {Actual Age};
+          
+          % Arrow showing the brain age gap
+          \draw[<->,thick] (4.2, 0.7) -- (5.8, 0.7) node[midway, below] {Gap};
+          
+          % Additional arrows
+          \draw[<-,thick] (0.2, 1.3) -- (1.8, 1.3);
+          \draw[->,thick] (4.2, 1.3) -- (5.8, 1.3);
+        \end{tikzpicture}
+      \end{column}
+    
+      % Right column with the colored text box
+      \begin{column}{0.5\textwidth}
+        \vspace{-20pt} % Adjust this value to vertically align
+        \begin{tcolorbox}[colback=blue!10!white, colframe=blue!40!black, width=\linewidth]
+          {\RaggedRight{Can we conceptualize a \\ positive brain age gap as a distal summary statistic for \textbf{poorer} infant health?}}
+        \end{tcolorbox}
+      \end{column}
+    \end{columns}
   \end{block}
 
+  \vspace{-5pt}
+
   \begin{block}{Methods}
-
-    Participants were children born $<$32 weeks gestational age (GA) and had an MRI scan at near-term equivalent age. The clinical MRI protocol included single-shell diffusion-weighted magnetic resonance images in two phase-encoding directions ($b=700\,\text{s/mm}^2$). The final dataset after quality control included scans collected from June 2016 to January 2022 ($n=184$), with mean GA at birth of 200 days (range: 161--223 days), mean postmenstrual age (PMA) at scan of 259 days (range: 224--323 days), and mean corrected age (CA) at scan of 59 days (range: 3--157 days). 
-
-    Preprocessing, probabilistic tractography, and multidimensional analysis of informative features from tractometry were performed with open-source software libraries (QSIprep, pyAFQ, and AFQ-Insight). We modeled fiber orientation distribution functions using constrained spherical deconvolution (CSD), and then extracted tract profiles of diffusion properties along the length of 24 tracts. Each tract was divided into 100 nodes, resulting in a feature space of 4800 features per subject utilizing both fractional anisotropy (FA) and mean diffusivity (MD). 
-
-    The GA, PMA at scan, and CA at scan were used as target variables. A lasso principal components regression with elastic net regularization was used to predict targets, with splits used to ensure independence of training and test sets. To evaluate model fit, we used a nested cross-validation procedure with 20\% of the dataset held out for each batch, and predicted the age of held-out subjects with fixed parameters based on the linear coefficients from the training set.
-
-    \vspace{20pt}
     \begin{tikzpicture}[node distance=3cm, auto]
         % Define block styles
-        \tikzstyle{block} = [rectangle, draw, fill=paloaltogreen, 
-        text width=5em, text centered, rounded corners, minimum height=4em, font=\scriptsize, text=white]
+        \tikzstyle{block} = [rectangle, draw, fill=cardinalred, 
+        text width=6em, text centered, rounded corners, minimum height=3em, font=\small, text=white]
         \tikzstyle{line} = [draw, -latex']
 
         % Nodes
-        \node [block] (rawdata) {Raw data \\ available with T1, pe0 and pe1 \\ (n=???)};
-        \node [block, right of=rawdata, yshift=1cm] (qsiprep-pe1) {Completed qsiprep with pe1 \\ (n=???)};
-        \node [block, right of=rawdata, yshift=-1cm] (qsiprep-nope1) {Completed qsiprep without pe1 \\ (n=???)};
-        \node [block, right of=qsiprep-pe1] (pyAFQ-pe1) {Completed pyAFQ \\ (n=???)};
-        \node [block, right of=qsiprep-nope1] (pyAFQ-nope1) {Completed pyAFQ \\ (n=???)};
+        \node [block] (dmridata) {Raw diffusion MRI data};
+        \node [block, right of=dmridata, xshift = 0.25cm] (qsiprep) {Preprocessing in QSIprep$^1$};
+        \node [block, right of=qsiprep, xshift = 0.25cm] (pyAFQ) {Reconstruction \\ and \\ segmentation of whole brain tractogram in pyAFQ$^3$};
+        \node [block, right of=pyAFQ, xshift = 0.25cm] (AFQInsight) {Models trained on tract profiles and target features in AFQ-Insight$^5$};
+
+        % Lines
+        \path [line] (dmridata) -- (qsiprep);
+        \path [line] (qsiprep) -- (pyAFQ);
+        \path [line] (pyAFQ) -- (AFQInsight);
+    \end{tikzpicture}
+    
+    \vspace{-10pt}
+    
+    \begin{itemize}
+        \item 3 Models
+        \begin{itemize}
+            \normalsize % Set the font size to normal for sub-items
+            \item Principal components regression (PCR) - No regularization
+            \item Lasso principal components regression (PCR-Lasso) - L1 regularization enforces sparsity
+            \item Bundle-wise principal components regression with sparse group lasso penalties (PCR-SGL) - L1 and L2 regularization
+        \end{itemize}
+        \vspace{10pt}
+        \item 3 Targets
+        \begin{itemize}
+            \normalsize % Set the font size to normal for sub-items
+            \item GA (age since conception)
+            \item Chronological age (CA; age since delivery)
+            \item Post-menstrual age (PMA) at scan (sum of GA + CA)
+        \end{itemize}
+    \end{itemize}
+
+    \vspace{10pt}
+
+        \begin{tikzpicture}
+        % Define colors and dimensions
+        \def\barHeight{0.8}         % Height of each bar
+        \def\barLengthTotal{5}       % Total length of each bar (representing 100% of data)
+        \def\testBarLength{1}        % Length of test set (20%)
+        \def\trainBarLength{4}       % Length of training set (80%)
+        \def\hOffset{0.7}            % Horizontal displacement between splits
+        \def\vOffset{0.4}            % Vertical displacement between splits
+        \def\nSplits{5}              % Number of splits
+        \def\offset{0.4}             % Text offset for better centering
+    
+        % Loop through and draw the 5 displaced bars for each split
+        \foreach \i in {1,...,\nSplits} {
+            % Calculate vertical and horizontal shift for each bar
+            \pgfmathsetmacro{\xShift}{(\i-1)*\hOffset}
+            \pgfmathsetmacro{\yShift}{(\i-1)*\vOffset}
+            \pgfmathsetmacro{\testStart}{(\i-1)*\testBarLength} % Test set shift for highlighting
+            
+            % Total bar length
+            \draw[fill=none, draw=black] 
+            (\xShift, \yShift) rectangle (\xShift+\barLengthTotal, \yShift+\barHeight);
+    
+            % Highlight the test set section (20% of data)
+            \filldraw[fill=blue!40, draw=black] 
+            (\xShift+\testStart, \yShift) rectangle (\xShift+\testStart+\testBarLength, \yShift+\barHeight);
+            
+            % Fill the remaining part of the bar for the training set
+            \filldraw[fill=orange!60, draw=black] 
+            (\xShift, \yShift) rectangle (\xShift+\testStart, \yShift+\barHeight);
+            \filldraw[fill=orange!60, draw=black] 
+            (\xShift+\testStart+\testBarLength, \yShift) rectangle (\xShift+\barLengthTotal, \yShift+\barHeight);
+        }
+
+        % Text annotations with smaller font
+        \node[font=\small] at (\xShift+\barLengthTotal, \yShift+\barHeight+1.25) {Train (80\% of data)};
+        \node[font=\small] at (\xShift+\barLengthTotal+2.3, \yShift+\barHeight+1.25) {Test};
+            
+        % Repetition arrow
+        \draw[->, thick] (\xShift+\barLengthTotal+2.5, \yShift+\barHeight) -- ++(5.5,0)
+        node[midway, above] {Repeat nested cross-validation};
+    
+    \end{tikzpicture}
+
+
+    \vspace{10pt}
+    
+    \begin{tikzpicture}[node distance=3cm, auto]
+        % Define block styles
+        \tikzstyle{block} = [rectangle, draw, fill=paloaltogreen, 
+        text width=6em, text centered, rounded corners, minimum height=3em, font=\small, text=white]
+        \tikzstyle{line} = [draw, -latex']
+
+        % Nodes
+        \node [block] (rawdata) {Raw data \\ available with T1, pe0 and pe1 \\ (\textit{n} = 359)};
+        \node [block, right of=rawdata, xshift = 0.25cm] (qsiprep-pe1) {Completed QSIprep \\ (\textit{n} = 316)};
+        \node [block, right of=qsiprep-pe1, xshift = 0.25cm] (pyAFQ-pe1) {Completed pyAFQ \\ (\textit{n} = 287)};
+        \node [block, right of=pyAFQ-pe1, xshift = 0.25cm] (AFQInsight-pe1) {WM features included in brain age model after passing QC \\ (\textit{n} = 184)};
 
         % Lines
         \path [line] (rawdata) -- (qsiprep-pe1);
-        \path [line] (rawdata) -- (qsiprep-nope1);
         \path [line] (qsiprep-pe1) -- (pyAFQ-pe1);
-        \path [line] (qsiprep-nope1) -- (pyAFQ-nope1);
+        \path [line] (pyAFQ-pe1) -- (AFQInsight-pe1);
     \end{tikzpicture}
+
+    \vspace{-2pt}
+    Their health acuity was evaluated based on a sum of binary indicators for 4 major comorbidities of prematurity (mean = 0.69, range: 0 -- 4):
+    \vspace{-5pt}
+    \begin{itemize}
+    \item Sepsis 
+    \item Necrotizing enterocolitis 
+    \item Intraventricular hemorrhages (IVH) of grade 1 and above 
+    \item Bronchopulmonary dysplasia of grade 2 and above 
+    \end{itemize}
+      
   \end{block}
 
 \end{column}
@@ -139,54 +263,53 @@
 \separatorcolumn
 
 \begin{column}{\colwidth}
-
-  \begin{block}{Results}
-
-    Features in infant white matter microstructure explain significant variance in PMA at scan of these infants ($R^2 = 0.21$). When decomposed into GA at birth and CA at scan, we observe that diffusion properties explain 15\% of variance in CA and 2\% of variance in GA, respectively. The Lasso PCR model had a mean $\alpha$ value of 17.1 (SD = 13.1), with the model weights that were significantly different from 0 distributed over many different tracts and diffusion MRI (dMRI) tissue properties (both FA and MD).
-
-    % Table to include 12 models - with and without pe1, LassoCV and SGL, and each of them FA+MD, FA only and MD only. Metrics will be Train R2, Test R2, Train MAE, Test MAE, L1 ratio, Alpha. One-tailed t-test to see if they are significantly different from 0
-    \begin{table}[ht]
+  \vspace{-15pt}
+  \begin{block}{Participants (\textit{n} = 184; males = 104) were infants born at \textless 32 weeks GA. CA and GA were highly negatively correlated (\textit{r} = -0.85).}
+    \vspace{-5pt}
+    \begin{figure}[ht]
       \centering
-      \fontsize{8.5}{10}\selectfont
-      \begin{tabularx}{\textwidth}{X c c c c c c}
-        \toprule
-        \textbf{Model} & \textbf{Train $R^2$} & \textbf{Test $R^2$} & \textbf{Train MAE} &
-        \textbf{Test MAE} &
-        \textbf{$\alpha$} &
-        \textbf{L1 Ratio}\\
-        \midrule
-        PCR with pe1 (FA and MD) & 0.537 & -1.00 & 8.38 & 9.82 & - & - \\
-        PCR without pe1 (FA and MD) & 0.579 & -1.49 & 7.98 & 9.78 & - & - \\
-        \midrule
-        PCR-Lasso with pe1 (FA and MD) & 0.491 & 0.208 & 6.99 & 7.67 & 17.1 & - \\
-        PCR-Lasso with pe1 (FA only) & 0.428 & 0.144 & 6.75 & 7.43 & 9.26 & - \\
-        PCR-Lasso with pe1 (MD only) & 0.180 & 0.047 & 8.30 & 8.71 & 28.5 & - \\
-        \midrule
-        PCR-SGL with pe1 (FA and MD) & 0.264 & 0.104 & 8.05 & 8.19 & 37.1 & 0.903 \\
-        PCR-SGL with pe1 (FA only) & 0.220 & 0.054 & 8.14 & 8.25 & 33.5 & 0.906 \\
-        PCR-SGL with pe1 (MD only) & 0.170 & 0.041 & 8.47 & 8.82 & 27.4 & 0.909 \\
-        \midrule
-        PCR-Lasso without pe1 (FA and MD) & 0.590 & -0.015 & 5.72 & 7.00 & 35.5 & - \\
-        PCR-Lasso without pe1 (FA only) & 0.476 & 0.135 & 6.38 & 6.64 & 16.3 & - \\
-        PCR-Lasso without pe1 (MD only) & 0.365 & -0.024 & 7.33 & 8.09 & 48.2 & - \\
-        \midrule
-        PCR-SGL without pe1 (FA and MD) & 0.326 & 0.146 & 7.36 & 7.50 & 41.0 & 0.911 \\
-        PCR-SGL without pe1 (FA only) & 0.380 & 0.161 & 6.97 & 7.19 & 24.9 & 0.804 \\
-        PCR-SGL without pe1 (MD only) & 0.309 & 0.030 & 7.56 & 7.84 & 27.9 & 0.906 \\
-        \bottomrule
-      \end{tabularx}
-      \caption{Comparison of model performance when predicting PMA at scan (days).}
-    \end{table}
+      \includegraphics[clip, width=0.8\textwidth]{age_at_scan.jpg}
+      \label{fig:age_at_scan}
+    \end{figure}
+  \end{block}
+  \vspace{-20pt}
+  
+  \begin{block}{Right anterior thalamic radiation (ATR) microstructure contributes the most to the prediction of brain age in this sample.}
+    The brain age gaps from both PCR-Lasso and SGL models were highly correlated ($\textit{r} = 0.872$). PCR-SGL produces a much sparser distribution of coefficients compared to PCR-Lasso.
+
+    \vspace{-10pt}
     
-    % I should plot all four into the same diagram to save space - maybe dotted lines for without pe1, and a different color for LassoCV
-    \vspace{-30pt}  % Adjust the value to control the space
     \begin{figure}
       \centering
-      \includegraphics[trim=10 20 10 20,clip,width=1.05\textwidth]{sgl_both.jpg}
-      \vspace{-40pt}  % Adjust the value to control the space
-      \caption{Sparse Group Lasso with and without reverse phase-encoding direction (pe1).}
+      \includegraphics[clip, width=0.8\textwidth]{sgl_both.jpg}
     \end{figure}
+    \vspace{-20pt}  % Adjust the value to control the space
 
+    
+    \begin{columns}[t] % Ensure top alignment
+        \begin{column}{0.53\textwidth}
+            \vspace{-10pt}
+            \begin{figure} % sub-17055, sub-17044
+            \centering  \includegraphics[clip,width=\textwidth]{brain_2.png}
+            \end{figure}
+      \end{column}
+    
+      % Right column with the colored text box
+      \begin{column}{0.46\textwidth}
+        \vspace{-10pt}
+        \begin{tcolorbox}[colback=gray!50, colframe=cardinalred, width=\linewidth]
+          {\fontsize{9.5}{10}\selectfont
+          \begin{itemize}
+            \item \textcolor[rgb]{1.0, 1.0, 0.4}{\rule{0.8cm}{0.3cm}} Left Arcuate (ARC)
+            \item \textcolor[rgb]{0.2, 0.4, 0.6}{\rule{0.8cm}{0.3cm}} Left Anterior Thalamic Radiation (ATR) 
+            \item \textcolor[rgb]{1.0, 0.4, 0.0}{\rule{0.8cm}{0.3cm}} Left Superior Longitudinal Fasciculus (SLF) 
+            \item \textcolor[rgb]{0.0, 0.6, 0.2}{\rule{0.8cm}{0.3cm}} Left Uncinate (UNC)
+          \end{itemize}
+          Left hemisphere tracts plotted for illustrative purposes. Tract endpoints have been clipped in pyAFQ.}
+        \end{tcolorbox}
+      \end{column}
+    \end{columns}
+    
   \end{block}
 
 \end{column}
@@ -194,36 +317,79 @@
 \separatorcolumn
 
 \begin{column}{\colwidth}
+  \vspace{-15pt}
+  \begin{block}{Infant WM features explain 21\% of variance in PMA at scan. Including both FA and MD increases test $R^2$.}
 
-  \begin{block}{Discussion}
-
-    Features of white matter (WM) microstructure predicted PMA at scan, with better prediction of CA than GA. This finding likely relates to the timeline of WM development, where the vulnerability of oligodendrocytes is maximal between PMA of 24 to 48 weeks. We replicate previous findings that weights are distributed throughout WM, indicating that many regions of WM change over time, even in the first months of life after preterm birth. 
-
-    Advantages of this data-driven approach include being able to utilize clinical scans collected under variable conditions, a continuously-maintained open-source preprocessing pipeline, and maximizing the use of neuroimaging data available without the need for \textit{a priori} feature engineering. Future research will consider whether WM microstructure relates to clinical status and developmental care during hospitalization. An accurate brain-age model for the neonatal brain holds potential for tracking the effects of neonatal care and predicting neurodevelopmental outcomes.
-
+    In general, the infants with the highest PMA at scan had higher FA and lower MD values. 
+    
+    When PMA at scan is decomposed into GA at birth and CA, diffusion properties explain 15\% of variance in CA and 2\% of variance in GA, respectively (not shown in table below). 
+    \begin{table}[ht]
+      \centering
+      \fontsize{9}{11}\selectfont
+      \begin{tabularx}{\textwidth}{l c c c c c c}
+        \toprule
+        \textbf{Model} & \textbf{Target} & \textbf{Train $R^2$} & \textbf{Test $R^2$} & \textbf{Train MAE} &
+        \textbf{Test MAE} \\
+        \midrule
+         PCR & PMA at scan & 0.559 & 0.198 & 8.14 & 9.84 \\
+        \midrule
+        \rowcolor{yellow!50} PCR-Lasso & PMA at scan & 0.491 & 0.208 & 6.99 & 7.67 \\
+        PCR-Lasso (FA only) & PMA at scan & 0.428 & 0.144 & 6.75 & 7.43 \\
+        PCR-Lasso (MD only) & PMA at scan & 0.180 & 0.047 & 8.30 & 8.71 \\
+        \midrule
+        \rowcolor{yellow!50} PCR-SGL & PMA at scan & 0.264 & 0.104 & 8.05 & 8.19 \\
+        PCR-SGL (FA only) & PMA at scan & 0.220 & 0.054 & 8.14 & 8.25 \\
+        PCR-SGL (MD only) & PMA at scan & 0.170 & 0.041 & 8.47 & 8.82 \\
+        \bottomrule
+      \end{tabularx}
+    \end{table}
   \end{block}
 
-  \begin{block}{Filler Text for Now}
+  \vspace{-15pt}
+  
+  \begin{block}{Brain age gap explains additional 2\% of variance in health acuity above and beyond CA and GA. \\ Variance explained by brain age gap is greater than any WM feature alone (mean tract FA or MD).}
+  
+    \vspace{-25pt}
 
-    Something about how brain age models have commonly been developed with metrics derived from structural and functional MRI scans, but this adds another angle to approach brain age prediction. Node-level and tract-level details allow us to localize areas that are more predictive of brain age or perhaps larger variance within premature neonates.
+    \[    
+    \textbf{Model 2:} \quad \mathrm{health\_acuity} \sim \mathrm{1} + \mathrm{CA} + \mathrm{GA} + \mathrm{brain\_age\_gap}
+    \]
 
-  \end{block}
+    \vspace{-15pt}
 
-  \begin{block}{Future Work}
+       \begin{table}[htbp]
+        \centering
+        \fontsize{12}{14}\selectfont
+        \begin{tabularx}{\textwidth}{X c c c}
+        \toprule
+        \textbf{Variables} & \textbf{Model 1} & \textbf{Model 2} & \textbf{Model 3} \\
+        \midrule
+        Intercept & -0.280 & 2.93 & \checkmark \\
+        CA & 0.018*** & 0.005 & \checkmark \\
+        GA & 0.001 & -0.013 & \checkmark \\
+        PMA at Scan Gap & - & 0.019** & - \\
+        Mean Tract FA or MD & - & - & \checkmark \\
+        \midrule
+        \textbf{Likelihood Ratio (LR)} & - & 6.91** & \\
+        \bottomrule
+        \end{tabularx}
+      \end{table}
+      \vspace{-10pt}
+     \caption{\fontsize{10}{12}\selectfont Asterisks denote level of significance: *** $\textit{p} < .001$, ** $\textit{p} < .01$, * $\textit{p} < .05$}
+    \end{block}
+    
+    \vspace{-10pt}  % Adjust the value to control the space
 
-    Look at how brain age gap correlates with health and care composites.
-
-  \end{block}
-
-  \begin{block}{References}
-
-    \nocite{*}
-    \renewcommand{\bibfont}{\scriptsize} % Use \footnotesize, \small, \scriptsize, or \tiny as needed
-    \printbibliography
-
-  \end{block}
-
-
+   \begin{tcolorbox}[colback=blue!10!white, colframe=blue!40!black, width=\linewidth, title=\centering \textbf{Conclusion}]
+    The brain age gap \textbf{shows promise} as a summary statistic for infant health, above and beyond information that can be gleaned from age and individual measures of WM microstructure.
+    \end{tcolorbox}
+        
+    \begin{block}{References}
+        \nocite{*}
+        \renewcommand{\bibfont}{\fontsize{6}{7}\selectfont} % Use \footnotesize, \small, \scriptsize, or \tiny as needed
+        \printbibliography
+    \end{block}
+  
 \end{column}
 
 \separatorcolumn
